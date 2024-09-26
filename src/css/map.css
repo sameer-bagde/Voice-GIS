@@ -1,0 +1,351 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f1f3f4;
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+#map-container {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.loading-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  z-index: 2;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.search-container {
+  width: 100%;
+  max-width: 450px;
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.search-container input[type="text"] {
+  width: 100%;
+  height: 44px;
+  padding: 0 50px 0 50px;
+  border: 1px solid #dfe1e5;
+  border-radius: 24px;
+  background-color: white;
+  font-size: 16px;
+  box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+  transition: box-shadow 0.3s ease;
+  outline: none;
+}
+
+.search-container input[type="text"]:focus {
+  box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+}
+
+.search-container i {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: #5f6368;
+  transition: color 0.3s ease;
+  pointer-events: auto;
+}
+
+.search-container i:hover {
+  color: #1e6fd3;
+}
+
+.fa-search {
+  right: 50px;
+  cursor: pointer;
+}
+
+.fa-times {
+  right: 85px;
+  cursor: pointer;
+}
+
+.fa-microphone,
+.fa-microphone-slash {
+  right: 20px;
+  cursor: pointer;
+}
+
+.fa-location-arrow {
+  left: 20px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 600px) {
+  .search-container {
+    max-width: 90%;
+  }
+
+  .search-container input[type="text"] {
+    padding: 0 40px 0 40px;
+  }
+
+  .fa-search {
+    right: 40px;
+  }
+
+  .fa-times {
+    right: 70px;
+  }
+
+  .fa-microphone,
+  .fa-microphone-slash {
+    right: 15px;
+  }
+
+  .fa-location-arrow {
+    left: 15px;
+  }
+
+  .download-button-container {
+    margin-top: 0; /* Reset margin for media query */
+  }
+}
+
+.dot {
+  width: 10px; /* Slightly larger for better visibility */
+  height: 10px;
+  background-color: rgb(27, 79, 236); /* Default color */
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  animation: scaleAnimation 1.5s infinite ease-in-out;
+  position: relative;
+  transition: background-color 0.3s ease; /* Smooth color transition */
+}
+
+.dot.active {
+  background-color: rgb(0, 176, 240); /* Change color when active */
+  transform: scale(1.1); /* Slightly enlarge when active */
+}
+
+@keyframes scaleAnimation {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0.5;
+  }
+}
+
+.location-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.28);
+  transition: transform 0.3s ease;
+  z-index: 10;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background-color: white;
+}
+
+.location-button:hover {
+  transform: scale(1.1);
+}
+
+.location-button i {
+  font-size: 24px;
+  color: #5f6368;
+  transition: color 0.3s ease;
+}
+
+.location-button:hover i {
+  color: #1541ef;
+}
+
+.suggestions-container {
+  width: 100%;
+  border: 1px solid #ccc;
+  background: white;
+  position: absolute;
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+  top: 100%;
+  margin-top: 8px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.suggestion {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.suggestion.highlighted {
+  background-color: #f0f0f0;
+}
+
+.clear-search-button {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: 20px;
+  color: #5f6368;
+  transition: color 0.3s ease;
+}
+
+.clear-search-button:hover {
+  color: #1e6fd3;
+}
+
+
+/* Wrapper for flexbox layout */
+.flex-wrapper {
+  display: flex;
+  flex-direction: column-reverse; /* Reverse items so download button is above */
+  align-items: flex-end; /* Align items to the right */
+  position: absolute;
+  bottom: 20px; /* Align the wrapper at the bottom */
+  right: 20px; /* Align to the right */
+  z-index: 1; /* Ensure it's above other elements */
+}
+
+/* Wrapper for flexbox layout */
+.flex-wrapper {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+  position: absolute;
+  bottom: 80px;
+  right: 20px;
+  z-index: 100;
+}
+
+.download-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.28);
+  transition: transform 0.3s ease;
+  z-index: 100;
+  background-color: white;
+  position: relative;
+}
+
+.download-button:hover {
+  transform: scale(1.1);
+}
+
+.download-button i {
+  font-size: 24px;
+  color: #5f6368;
+  transition: color 0.3s ease;
+}
+
+.download-button:hover i {
+  color: #1541ef;
+}
+
+.file-downloader {
+  position: absolute;
+  bottom: 370px; 
+  right: 0;
+  z-index: 10;
+  background-color: white;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 250px; 
+  height: 300px; 
+  max-height: 500px;
+  overflow-y: auto;
+  transform: translateY(100%); 
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.form-container {
+  width: 100%;
+  border: 1px solid #ccc;
+  background: white;
+  position: absolute;
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+  top: 100%;
+  margin-top: 8px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-container .transport-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+}
+
+.form-container .input-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+}
+
+.submit-button {
+  margin: 16px;
+  padding: 12px;
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #1765cc;
+}
